@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Username Generator - Free Gamertag & Handle Ideas | Cat Sick Tools</title>
+<meta name="description" content="Generate unique usernames and gamertags instantly with our free tool.">
+
+<style>
+body{
+  background:#000;
+  color:#fff;
+  font-family:Arial;
+  text-align:center;
+  padding:30px;
+}
+
+<div style="margin-bottom:20px;">
+  <a href="index.html">Home</a> |
+  <a href="username.html">Usernames</a> |
+  <a href="image.html">Image Tool</a>
+</div>
+
+/* LOGO + TÍTULO */
+.logo-title{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+
+.logo-img{
+  width:42px;
+  height:auto;
+  filter: drop-shadow(0 0 6px #ffd700);
+}
+
+/* TÍTULO */
+h1{
+  letter-spacing:2px;
+  text-shadow:0 0 8px rgba(255,255,255,0.25);
+}
+
+/* SUBTÍTULO */
+.subtitle{
+  color:#aaa;
+  margin-bottom:20px;
+  font-size:14px;
+}
+
+/* BOX */
+.box{
+  background:#111;
+  padding:20px;
+  border:1px solid #333;
+  display:inline-block;
+}
+
+/* CONTROLES */
+select,input,button{
+  margin:6px;
+}
+
+button{
+  background: linear-gradient(45deg, #ffd700, #fff3a0);
+  color:#000;
+  border:none;
+  padding:10px 20px;
+  cursor:pointer;
+  font-weight:bold;
+  border-radius:6px;
+
+  box-shadow: 0 0 8px rgba(255,215,0,0.6),
+              0 0 12px rgba(255,215,0,0.5);
+
+  transition: all 0.2s ease;
+}
+
+/* HOVER */
+button:hover{
+  transform: scale(1.05);
+
+  box-shadow: 0 0 12px rgba(255,215,0,0.9),
+              0 0 18px rgba(255,215,0,0.8);
+}
+
+/* CLICK */
+button:active{
+  transform: scale(0.97);
+}
+
+/* RESULTADOS */
+.result-list{
+  margin-top:20px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+
+.name-item{
+  background:#111;
+  padding:6px;
+  display:flex;
+  justify-content:space-between;
+}
+
+.fav{
+  color:gold;
+  cursor:pointer;
+}
+
+/* ADS */
+.ad{
+  margin:25px auto;
+  width:100%;
+  max-width:900px;
+  height:90px;
+  border:1px dashed #333;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#555;
+  font-size:12px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOGO + TÍTULO -->
+<div class="logo-title">
+  <img src="logo.png" class="logo-img">
+  <h1>Cat Sick Tools</h1>
+</div>
+
+<div class="subtitle">Generate unique usernames, gamertags and creative aliases instantly</div>
+
+<p style="max-width:600px;margin:0 auto 20px;color:#888;font-size:14px;">
+This free username generator helps you create unique gamertags, social media handles and creative aliases instantly.
+Combine thousands of adjectives and nouns to discover original names with high variety and randomness.
+</p>
+
+<!-- AD TOP -->
+<div class="ad">ad space</div>
+
+<div class="box">
+
+<label>format:</label>
+<select id="format">
+<option value="lower">lowercase</option>
+<option value="caps">Capitalized</option>
+</select>
+
+<br>
+
+<label>separator:</label>
+<select id="separator">
+<option value=" " selected>space</option>
+<option value="">none</option>
+<option value="_">_</option>
+</select>
+
+<br>
+
+<label><input type="checkbox" id="leet"> leet</label>
+<label><input type="checkbox" id="numbers"> numbers</label>
+
+<br>
+
+<button onclick="generateList()">Generate</button>
+
+</div>
+
+<div id="results" class="result-list"></div>
+
+<!-- AD MIDDLE -->
+<div class="ad">ad space</div>
+
+<h3>Favorites</h3>
+<button onclick="clearFav()">clear</button>
+
+<div id="favorites" class="result-list"></div>
+
+<!-- AD FOOTER -->
+<div class="ad">ad space</div>
+
+<script>
+
+// ================= BASE =================
+const baseNouns = [
+"void","signal","core","shadow","ghost","flame","stone","pulse","drift","echo",
+"matrix","node","blade","storm","wave","dust","ash","spark","frame","grid",
+"claw","fang","orbit","nova","pixel","circuit","engine","thread","realm","beast",
+"forest","river","cloud","ember","night","light","bone","skull","leaf","wind",
+"dream","glitch","shard","crystal","smoke","flare","vortex","sector","zone"
+];
+
+const baseAdj = [
+"dark","silent","wild","neon","cold","burning","lost","hidden","broken","faded",
+"glowing","rapid","ancient","hollow","deep","soft","sharp","bright","distant",
+"electric","ghostly","frozen","restless","shifting","twisted","heavy","dim",
+"endless","fractured","crimson","silver","golden","pale","rough","fragile",
+"vivid","empty","loud","quiet","strange","fierce","calm","toxic","divine",
+"chaotic","smooth","vapor","cosmic","stellar","urban","liquid","digital"
+];
+
+// ================= STORAGE =================
+function save(k,d){localStorage.setItem(k,JSON.stringify(d))}
+function load(k){return JSON.parse(localStorage.getItem(k))||[]}
+
+// ================= DATABASE =================
+let db={nouns:[],adj:[]};
+
+// ================= CLEAN =================
+function clean(words){
+return [...new Set(
+words.map(w=>w.toLowerCase())
+.filter(w=>/^[a-z]+$/.test(w))
+.filter(w=>w.length>3 && w.length<14)
+)];
+}
+
+// ================= API =================
+function fetchWords(query,type){
+fetch(`https://api.datamuse.com/words?ml=${query}&max=150`)
+.then(r=>r.json())
+.then(d=>{
+let words=clean(d.map(w=>w.word)).slice(0,120);
+if(type==="noun") db.nouns.push(...words);
+else db.adj.push(...words);
+});
+}
+
+function loadAPI(){
+["technology","nature","animal","food","space","city","fantasy","weapon","ocean","sky","music","art"]
+.forEach(q=>fetchWords(q,"noun"));
+
+["emotion","color","texture","speed","power","mystic","aesthetic","feeling","energy","style","vibe","intensity","motion","chaos","beauty"]
+.forEach(q=>fetchWords(q,"adj"));
+}
+
+// ================= UTILS =================
+function rand(a){return a[Math.floor(Math.random()*a.length)]}
+
+function format(t){
+  if(document.getElementById("format").value==="caps"){
+    return t.replace(/\b\w/g, l => l.toUpperCase());
+  }
+  return t;
+}
+
+function leet(t){
+return t.replace(/a/g,"4").replace(/e/g,"3").replace(/o/g,"0").replace(/i/g,"1");
+}
+
+// ================= GENERATOR =================
+function generateName(){
+
+let sep=document.getElementById("separator").value;
+
+let nouns=[...baseNouns,...db.nouns];
+let adjs=[...baseAdj,...db.adj];
+
+if(nouns.length<20) nouns=baseNouns;
+if(adjs.length<20) adjs=baseAdj;
+
+let name = rand(adjs)+sep+rand(nouns);
+
+name=format(name);
+
+if(document.getElementById("leet").checked)
+name=leet(name);
+
+if(document.getElementById("numbers").checked)
+name+=Math.floor(Math.random()*999);
+
+return name;
+}
+
+// ================= FAVORITES =================
+let favorites=load("fav");
+
+function addFav(n){
+if(!favorites.includes(n)){
+favorites.push(n);
+save("fav",favorites);
+renderFav();
+}
+}
+
+function clearFav(){
+favorites=[];
+save("fav",favorites);
+renderFav();
+}
+
+function renderFav(){
+let c=document.getElementById("favorites");
+c.innerHTML="";
+favorites.forEach(n=>{
+let d=document.createElement("div");
+d.className="name-item";
+d.innerText=n;
+c.appendChild(d);
+});
+}
+
+// ================= UI =================
+function addName(){
+let c=document.getElementById("results");
+let n=generateName();
+
+let d=document.createElement("div");
+d.className="name-item";
+
+let span=document.createElement("span");
+span.innerText=n;
+
+let copy=document.createElement("button");
+copy.innerText="copy";
+copy.onclick=()=>navigator.clipboard.writeText(n);
+
+let fav=document.createElement("span");
+fav.innerText="★";
+fav.className="fav";
+fav.onclick=()=>addFav(n);
+
+d.appendChild(span);
+d.appendChild(copy);
+d.appendChild(fav);
+c.appendChild(d);
+}
+
+function generateList(){
+let c=document.getElementById("results");
+c.innerHTML="";
+for(let i=0;i<12;i++) addName();
+}
+
+loadAPI();
+renderFav();
+
+</script>
+
+</body>
+</html>
