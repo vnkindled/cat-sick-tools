@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Image Tool - Cat Sick Tools</title>
+<meta name="description" content="Generate and experiment with images and visual content.">
 
 <style>
 body{
@@ -10,17 +11,104 @@ body{
   color:#fff;
   font-family:Arial;
   text-align:center;
-  padding:40px;
+  padding:30px;
+}
+
+/* MENU */
+.nav{
+  margin-bottom:20px;
+}
+.nav a{
+  color:#aaa;
+  margin:0 10px;
+  text-decoration:none;
+}
+.nav a:hover{
+  color:#fff;
+}
+
+/* LOGO + TITLE */
+.logo-title{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+
+.logo-img{
+  width:42px;
+  filter: drop-shadow(0 0 6px #ffd700);
+}
+
+/* TITLE */
+h1{
+  letter-spacing:2px;
+  text-shadow:0 0 8px rgba(255,255,255,0.25);
+}
+
+.subtitle{
+  color:#aaa;
+  margin-bottom:20px;
+}
+
+/* BOX */
+.box{
+  background:#111;
+  padding:20px;
+  border:1px solid #333;
+  display:inline-block;
+}
+
+/* BUTTON */
+button{
+  background: linear-gradient(45deg, #ffd700, #fff3a0);
+  border:none;
+  padding:10px 20px;
+  cursor:pointer;
+  font-weight:bold;
+  border-radius:6px;
+
+  box-shadow: 0 0 8px rgba(255,215,0,0.6),
+              0 0 12px rgba(255,215,0,0.5);
+}
+
+/* ADS */
+.ad{
+  margin:25px auto;
+  max-width:900px;
+  height:90px;
+  border:1px dashed #333;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#555;
 }
 </style>
 </head>
 
 <body>
 
-<h1>Image Tool</h1>
-<p>Coming soon...</p>
+<div class="nav">
+  <a href="index.html">Home</a>
+  <a href="username.html">Usernames</a>
+  <a href="image.html">Image Tool</a>
+</div>
 
-<a href="index.html">Back</a>
+<div class="logo-title">
+  <img src="logo.png" class="logo-img">
+  <h1>Cat Sick Tools</h1>
+</div>
+
+<div class="subtitle">Create and experiment with visual content</div>
+
+<div class="ad">ad space</div>
+
+<div class="box">
+  <p>Image tool coming soon...</p>
+  <button disabled>Generate Image</button>
+</div>
+
+<div class="ad">ad space</div>
 
 </body>
 </html>
