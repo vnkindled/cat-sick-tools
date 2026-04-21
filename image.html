@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Image Tool - Cat Sick Tools</title>
-<meta name="description" content="Generate and experiment with images and visual content.">
+<title>Image Tool - Square Profile Converter | Cat Sick Tools</title>
 
 <style>
 body{
@@ -14,62 +13,31 @@ body{
   padding:30px;
 }
 
-/* MENU */
+/* NAV */
 .nav{
   margin-bottom:20px;
 }
 .nav a{
-  color:#aaa;
-  margin:0 10px;
+  color:#ffd700;
   text-decoration:none;
-}
-.nav a:hover{
-  color:#fff;
+  margin:0 10px;
 }
 
-/* LOGO + TITLE */
+/* LOGO */
 .logo-title{
   display:flex;
   align-items:center;
   justify-content:center;
   gap:10px;
 }
-
 .logo-img{
   width:42px;
   filter: drop-shadow(0 0 6px #ffd700);
 }
 
-/* TITLE */
-h1{
-  letter-spacing:2px;
-  text-shadow:0 0 8px rgba(255,255,255,0.25);
-}
-
 .subtitle{
   color:#aaa;
   margin-bottom:20px;
-}
-
-/* BOX */
-.box{
-  background:#111;
-  padding:20px;
-  border:1px solid #333;
-  display:inline-block;
-}
-
-/* BUTTON */
-button{
-  background: linear-gradient(45deg, #ffd700, #fff3a0);
-  border:none;
-  padding:10px 20px;
-  cursor:pointer;
-  font-weight:bold;
-  border-radius:6px;
-
-  box-shadow: 0 0 8px rgba(255,215,0,0.6),
-              0 0 12px rgba(255,215,0,0.5);
 }
 
 /* ADS */
@@ -82,6 +50,56 @@ button{
   align-items:center;
   justify-content:center;
   color:#555;
+}
+
+/* LAYOUT */
+.main{
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  gap:30px;
+  flex-wrap:wrap;
+}
+
+/* CONTROLES */
+.controls{
+  background:#111;
+  padding:15px;
+  border:1px solid #333;
+  min-width:200px;
+  text-align:left;
+}
+
+button{
+  background: linear-gradient(45deg, #ffd700, #fff3a0);
+  color:#000;
+  border:none;
+  padding:8px 16px;
+  cursor:pointer;
+  font-weight:bold;
+  border-radius:6px;
+  margin-top:10px;
+  box-shadow:0 0 8px rgba(255,215,0,0.6);
+}
+
+/* PREVIEW */
+.preview-box{
+  border:1px solid #333;
+  padding:10px;
+}
+
+canvas{
+  max-width:350px;
+  max-height:350px;
+  width:100%;
+}
+
+/* RESPONSIVO */
+@media(max-width:700px){
+  .main{
+    flex-direction:column;
+    align-items:center;
+  }
 }
 </style>
 </head>
@@ -99,15 +117,122 @@ button{
   <h1>Cat Sick Tools</h1>
 </div>
 
-<div class="subtitle">Create and experiment with visual content</div>
-
-<div class="ad">ad space</div>
-
-<div class="box">
-  <p>Image tool coming soon...</p>
-  <button disabled>Generate Image</button>
+<div class="subtitle">
+Convert vertical photos into perfect square profile pictures
 </div>
 
+<!-- AD TOP -->
+<div class="ad">ad space</div>
+
+<div class="main">
+
+<div class="controls">
+<input type="file" id="upload">
+
+<br><br>
+
+<label>Mode:</label>
+<select id="mode" onchange="generate()">
+  <option value="blur">blur background</option>
+  <option value="black">black borders</option>
+  <option value="white">white borders</option>
+</select>
+
+<br><br>
+
+<label>Blur intensity:</label>
+<input type="range" id="blur" min="0" max="40" value="15" oninput="generate()">
+
+<br>
+
+<button onclick="generate()">Generate</button>
+<button onclick="download()">Download</button>
+</div>
+
+<div class="preview-box">
+<canvas id="canvas"></canvas>
+</div>
+
+</div>
+
+<!-- AD MIDDLE -->
+<div class="ad">ad space</div>
+
+<script>
+let img = new Image();
+let canvas = document.getElementById("canvas");
+let ctx = canvas.getContext("2d");
+
+// upload + preview automático
+document.getElementById("upload").onchange = e=>{
+  let file = e.target.files[0];
+  if(!file) return;
+
+  let reader = new FileReader();
+  reader.onload = function(ev){
+    img.onload = generate;
+    img.src = ev.target.result;
+  }
+  reader.readAsDataURL(file);
+};
+
+function generate(){
+
+  if(!img.src) return;
+
+  let size = Math.max(img.width, img.height);
+
+  canvas.width = size;
+  canvas.height = size;
+
+  let mode = document.getElementById("mode").value;
+  let blur = document.getElementById("blur").value;
+
+  ctx.clearRect(0,0,size,size);
+
+  // ===== FUNDO REAL =====
+  if(mode === "blur"){
+
+    // desenha imagem ampliada proporcionalmente
+    let scale = size / Math.min(img.width, img.height);
+    let w = img.width * scale;
+    let h = img.height * scale;
+
+    let x = (size - w)/2;
+    let y = (size - h)/2;
+
+    ctx.filter = `blur(${blur}px)`;
+    ctx.drawImage(img, x, y, w, h);
+    ctx.filter = "none";
+  }
+
+  if(mode === "black"){
+    ctx.fillStyle="#000";
+    ctx.fillRect(0,0,size,size);
+  }
+
+  if(mode === "white"){
+    ctx.fillStyle="#fff";
+    ctx.fillRect(0,0,size,size);
+  }
+
+  // ===== IMAGEM CENTRAL =====
+  let x = (size - img.width)/2;
+  let y = (size - img.height)/2;
+
+  ctx.drawImage(img, x, y);
+}
+
+// download
+function download(){
+  let link = document.createElement("a");
+  link.download = "cat-sick-image.png";
+  link.href = canvas.toDataURL();
+  link.click();
+}
+</script>
+
+<!-- AD FOOTER -->
 <div class="ad">ad space</div>
 
 </body>
