@@ -14,11 +14,16 @@ body{
   padding:30px;
 }
 
-<div style="margin-bottom:20px;">
-  <a href="index.html">Home</a> |
-  <a href="username.html">Usernames</a> |
-  <a href="image.html">Image Tool</a>
-</div>
+/* MENU */
+.menu{
+  margin-bottom:20px;
+}
+
+.menu a{
+  color:#ffd700;
+  text-decoration:none;
+  margin:0 8px;
+}
 
 /* LOGO + TÍTULO */
 .logo-title{
@@ -78,7 +83,6 @@ button{
 /* HOVER */
 button:hover{
   transform: scale(1.05);
-
   box-shadow: 0 0 12px rgba(255,215,0,0.9),
               0 0 18px rgba(255,215,0,0.8);
 }
@@ -121,11 +125,17 @@ button:active{
   color:#555;
   font-size:12px;
 }
-
 </style>
 </head>
 
 <body>
+
+<!-- MENU -->
+<div class="menu">
+  <a href="index.html">Home</a> |
+  <a href="username.html">Usernames</a> |
+  <a href="image.html">Image Tool</a>
+</div>
 
 <!-- LOGO + TÍTULO -->
 <div class="logo-title">
