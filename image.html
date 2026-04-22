@@ -22,19 +22,30 @@ body{
   text-decoration:none;
   margin:0 10px;
 }
+.nav a:hover{
+  color:#fff;
+}
 
-/* LOGO */
+/* LOGO + TITLE (IGUAL AO INDEX) */
 .logo-title{
   display:flex;
   align-items:center;
   justify-content:center;
   gap:10px;
 }
+
 .logo-img{
   width:42px;
   filter: drop-shadow(0 0 6px #ffd700);
 }
 
+/* TITLE */
+h1{
+  letter-spacing:2px;
+  text-shadow:0 0 8px rgba(255,255,255,0.25);
+}
+
+/* SUBTITLE */
 .subtitle{
   color:#aaa;
   margin-bottom:20px;
@@ -70,6 +81,7 @@ body{
   text-align:left;
 }
 
+/* BOTÕES */
 button{
   background: linear-gradient(45deg, #ffd700, #fff3a0);
   color:#000;
@@ -145,7 +157,6 @@ Convert vertical photos into perfect square profile pictures
 
 <br>
 
-<button onclick="generate()">Generate</button>
 <button onclick="download()">Download</button>
 </div>
 
@@ -190,10 +201,8 @@ function generate(){
 
   ctx.clearRect(0,0,size,size);
 
-  // ===== FUNDO REAL =====
+  // FUNDO
   if(mode === "blur"){
-
-    // desenha imagem ampliada proporcionalmente
     let scale = size / Math.min(img.width, img.height);
     let w = img.width * scale;
     let h = img.height * scale;
@@ -216,7 +225,7 @@ function generate(){
     ctx.fillRect(0,0,size,size);
   }
 
-  // ===== IMAGEM CENTRAL =====
+  // IMAGEM CENTRAL
   let x = (size - img.width)/2;
   let y = (size - img.height)/2;
 
